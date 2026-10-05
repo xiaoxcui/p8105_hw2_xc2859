@@ -6,6 +6,7 @@ output: github_document
 ---
 
 # Problem 1
+__Read and clean the data__
 
 ```{r}
 library(tidyverse)
@@ -25,3 +26,32 @@ nycsubway_df =
   )
 ```
 The dataset contains information on subway lines, stations, and station entrances. Variables include `line`, `station_name`, `station_latitude`, `station_longitude`, routes served (`route1` to `route11`), `entry` (whether the entrance allows entry into the station), `vending` (vending machine availability), `entrance_type`, as well as `ada` (ADA compliance). For data cleaning, I first cleaned the variable names by using `clean_names` function, then selected the variables needed for the analysis by using `select` function, and finally converting `entry` from a character variable to a logical variable by applying `mutate` and `case_match` functions. The resulting dataset has `r nrow(nycsubway_df)` rows and `r ncol(nycsubway_df)` columns. These data are not tidy because information on routes served are stored in multiple columns instead of in separate route number and route name variables. 
+
+__Answer the questions__
+
+1. How many distinct stations are there? Note that stations are identified both by name and by line. 
+```{r}
+# How many distinct stations are there?
+nycsubway_df |> 
+  distinct(line, station_name) |> 
+  nrow()
+```
+There are 465 distinct stations. 
+
+2. How many stations are ADA compliant?
+```{r}
+nycsubway_df |>
+  filter(ada == TRUE) |>
+  distinct(line, station_name) |>
+  nrow()
+```
+There are 84 ADA compliant stations. 
+
+3. What proportion of station entrances / exits without vending allow entrance? 
+```{r}
+nycsubway_df |>
+  filter(vending == "NO") |>
+  pull(entry) |> 
+  mean()
+```
+There are around 37.70% station entrances / exits without vending allow entrance. 
