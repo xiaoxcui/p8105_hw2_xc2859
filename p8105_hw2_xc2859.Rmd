@@ -1,0 +1,7 @@
+---
+title: "p8105_hw2_xc2859"
+author: "Xiaoxue Cui"
+date: "2026-10-05"
+output: github_document
+---
+
