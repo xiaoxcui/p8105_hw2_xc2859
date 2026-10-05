@@ -136,6 +136,7 @@ trashwheel_tidy_df =
 ```
 
 __Data description__
+
 The combined Trash Wheel dataset contains `r nrow(trashwheel_tidy_df)` observations and `r ncol(trashwheel_tidy_df)` variables. These variables include the Trash Wheel name, dumpster number, collection date, trash weight and volume, counts of different types of trash such as polystyrene waste, plastic bottles, cigarette butts, glass bottles and plastic bags, as well as estimated number of homes that could be powered by the collected trash. 
 
 ```{r}
@@ -159,3 +160,25 @@ For available data, the total weight of trash collected by Professor Trash Wheel
 
 
 # Problem 3
+__Import, clean, and tidy the baseline demographics dataset__
+```{r}
+baseline_df = 
+  read_csv(
+    "data_mci/MCI_baseline.csv", 
+    skip = 1) |>
+  janitor::clean_names() |>
+  filter(age_at_onset == ".") |>
+  mutate(
+    sex = case_match(
+      sex, 
+      0 ~ "female", 
+      1 ~ "male"
+    ), 
+    apoe4 = case_match(
+      apoe4, 
+      0 ~ "non-carrier", 
+      1 ~ "carrier"
+    )
+  )
+```
+
