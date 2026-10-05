@@ -29,29 +29,29 @@ The dataset contains information on subway lines, stations, and station entrance
 
 __Answer the questions__
 
-1. How many distinct stations are there? Note that stations are identified both by name and by line. 
 ```{r}
 # How many distinct stations are there?
 nycsubway_df |> 
   distinct(line, station_name) |> 
   nrow()
-```
-There are 465 distinct stations. 
 
-2. How many stations are ADA compliant?
-```{r}
+# How many stations are ADA compliant?
 nycsubway_df |>
   filter(ada == TRUE) |>
   distinct(line, station_name) |>
   nrow()
-```
-There are 84 ADA compliant stations. 
 
-3. What proportion of station entrances / exits without vending allow entrance? 
-```{r}
+# What proportion of station entrances / exits without vending allow entrance?
 nycsubway_df |>
   filter(vending == "NO") |>
   pull(entry) |> 
   mean()
 ```
-There are around 37.70% station entrances / exits without vending allow entrance. 
+Therefore, there are 465 distinct stations. 84 stations are ADA compliant. There are about 37.70% station entrances / exits without vending allow entrance.  
+
+
+__Reformat data__
+```{r}
+
+```
+
