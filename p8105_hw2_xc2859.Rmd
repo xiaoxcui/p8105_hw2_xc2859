@@ -83,3 +83,22 @@ nycsubway_tidy_df |>
   nrow()
 ```
 There are 60 distinct stations that serve the A train. Of the stations that serve the A train, 17 are APA compliant. 
+
+
+# Problem 2
+__Create a tidy dataset__
+```{r}
+# Read and clean the Mr.Trash Wheel sheet
+MrTrash_df = 
+  readxl::read_excel(
+    "data/202509 Trash Wheel Collection Data.xlsx", 
+    sheet = "Mr. Trash Wheel", 
+    range = "A2:N709") |> 
+  janitor::clean_names() |>
+  filter(!is.na(dumpster)) |>
+  mutate(
+    sports_balls = 
+      as.integer(round(sports_balls))
+  )
+```
+
