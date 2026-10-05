@@ -100,5 +100,25 @@ MrTrash_df =
     sports_balls = 
       as.integer(round(sports_balls))
   )
+
+# Read and clean the Professor Trash Wheel sheet
+ProfessorTrash_df = 
+  readxl::read_excel(
+    "data/202509 Trash Wheel Collection Data.xlsx", 
+    sheet = "Professor Trash Wheel", 
+    range = "A2:M135") |>
+  janitor::clean_names() |> 
+  filter(!is.na(dumpster))
+
+# Read and clean the Gwynnda sheet
+Gwynns_df = 
+   readxl::read_excel(
+    "data/202509 Trash Wheel Collection Data.xlsx", 
+    sheet = "Gwynns Falls Trash Wheel", 
+    range = "A2:L351") |>
+  janitor::clean_names() |> 
+  filter(!is.na(dumpster))
+
+
 ```
 
