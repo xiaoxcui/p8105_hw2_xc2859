@@ -24,4 +24,4 @@ nycsubway_df =
     )
   )
 ```
-
+The dataset contains information on subway lines, stations, and station entrances. Variables include `line`, `station_name`, `station_latitude`, `station_longitude`, routes served (`route1` to `route11`), `entry` (whether the entrance allows entry into the station), `vending` (vending machine availability), `entrance_type`, as well as `ada` (ADA compliance). For data cleaning, I first cleaned the variable names by using `clean_names` function, then selected the variables needed for the analysis by using `select` function, and finally converting `entry` from a character variable to a logical variable by applying `mutate` and `case_match` functions. The resulting dataset has `r nrow(nycsubway_df)` rows and `r ncol(nycsubway_df)` columns. These data are not tidy because information on routes served are stored in multiple columns instead of in separate route number and route name variables. 
