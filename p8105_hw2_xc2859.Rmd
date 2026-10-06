@@ -91,9 +91,10 @@ __Create a tidy dataset__
 # Read and clean the Mr.Trash Wheel sheet
 MrTrash_df = 
   readxl::read_excel(
-    "data/202509 Trash Wheel Collection Data.xlsx", 
+    "data/202610 Trash Wheel Collection Data.xlsx", 
     sheet = "Mr. Trash Wheel", 
-    range = "A2:N709") |> 
+    range = "A2:N742", 
+    na = c(".", "NA", "")) |> 
   janitor::clean_names() |>
   filter(!is.na(dumpster)) |>
   mutate(
@@ -106,9 +107,10 @@ MrTrash_df =
 # Read and clean the Professor Trash Wheel sheet
 ProfessorTrash_df = 
   readxl::read_excel(
-    "data/202509 Trash Wheel Collection Data.xlsx", 
+    "data/202610 Trash Wheel Collection Data.xlsx", 
     sheet = "Professor Trash Wheel", 
-    range = "A2:M135") |>
+    range = "A2:M139", 
+    na = c(".", "NA", "", "dive")) |>
   janitor::clean_names() |> 
   filter(!is.na(dumpster)) |>
   mutate(
@@ -117,21 +119,22 @@ ProfessorTrash_df =
   )
 
 # Read and clean the Gwynnda sheet
-Gwynns_df = 
+Gwynnda_df = 
    readxl::read_excel(
-    "data/202509 Trash Wheel Collection Data.xlsx", 
-    sheet = "Gwynns Falls Trash Wheel", 
-    range = "A2:L351") |>
+    "data/202610 Trash Wheel Collection Data.xlsx", 
+    sheet = "Gwynnda the Good Wheel of the W", 
+    range = "A2:L394", 
+    na = c(".", "NA", "")) |>
   janitor::clean_names() |> 
   filter(!is.na(dumpster)) |> 
   mutate(
-    trash_wheel_name = "Gwynns Falls", 
+    trash_wheel_name = "Gwynnda the Good Wheel", 
     year = as.integer(year)
   )
 
 # Combine these sheets into a tidy dataset
 trashwheel_tidy_df = 
-  bind_rows(MrTrash_df, ProfessorTrash_df, Gwynns_df) |>
+  bind_rows(MrTrash_df, ProfessorTrash_df, Gwynnda_df) |>
   select(trash_wheel_name, everything())
 ```
 
@@ -149,14 +152,14 @@ trashwheel_tidy_df |>
 # total number of cigarette butts collected by Gwynnda in June of 2022
 trashwheel_tidy_df |> 
   filter(
-    trash_wheel_name == "Gwynns Falls", 
+    trash_wheel_name == "Gwynnda the Good Wheel", 
     month == "June", 
     year == 2022
   ) |> 
   pull(cigarette_butts) |> 
   sum(na.rm = TRUE)
 ```
-For available data, the total weight of trash collected by Professor Trash Wheel was 282.26 tons. The total number of cigarette butts collected by Gwynnda in June of 2022 was 18120. 
+For available data, the total weight of trash collected by Professor Trash Wheel was 294.96 tons. The total number of cigarette butts collected by Gwynnda in June of 2022 was 18120. 
 
 
 # Problem 3
