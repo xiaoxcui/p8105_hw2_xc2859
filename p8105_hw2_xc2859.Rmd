@@ -163,7 +163,7 @@ For available data, the total weight of trash collected by Professor Trash Wheel
 __Import, clean, and tidy the baseline demographics dataset__
 ```{r}
 baseline_df = 
-  read_csv(
+  read.csv(
     "data_mci/MCI_baseline.csv", 
     skip = 1, 
     na = c(".", "NA", "")) |>
@@ -184,4 +184,65 @@ baseline_df =
     )
   )
 ```
-The baseline demographics dataset was imported using `read_csv`, with the first row skipped because it contains notes on how the variable was coded rather than meaningful data. Variable names were cleaned using `clean_names`. Participants who had MCI onset at baseline were excluded by retaining those who either had no recorded age at MCI onset or developed MCI after their age at the point of recruitment. The numeric codes for variables `sex` and `apoe4` were recoded as `female`/ `male` and `non-carrier` / `carrier`, respectively. The resulting dataset contains information about participants' demographics at baseline level, including participant ID, current age, sex, years of education, APOE4 carrier status, and age at MCI onset (missing data for this variable represents that a subject remains MCI-free during the follow-up period). 
+
+__Describe the import process and dataset features__
+
+The baseline demographics dataset was imported using `read.csv`, with the first row skipped because it contains notes on how the variable was coded rather than meaningful data, `"."`, `"NA"` and blank entries were treated as missing values during import. Variable names were cleaned using `clean_names`. Participants who had MCI onset at baseline were excluded by retaining those who either had no recorded age at MCI onset or developed MCI after their current age. The numeric codes for variables `sex` and `apoe4` were recoded as `female`/ `male` and `non-carrier` / `carrier`, respectively. The resulting dataset has `r nrow(baseline_df)` observations and `r ncol(baseline_df)` variables. These variables contains information about participants' demographics at baseline level, including participant ID, current age, sex, years of education, APOE4 carrier status, and age at MCI onset (missing data for this variable represents that a subject remains MCI-free during the follow-up period). 
+
+__Baselne characteristics__
+```{r}
+# Among recruited participants, the number of those develop MCI
+baseline_df |>
+  filter(
+    !is.na(age_at_onset)) |>
+  nrow()
+
+# Average baseline age
+baseline_df |> 
+  pull(current_age) |>
+  mean() |> 
+  round(digits = 2)
+
+# Proportion of women who are APOE4 carriers
+baseline_df |> 
+  filter(sex == "female") |>
+  mutate(
+    apoe4 = case_match(
+      apoe4, 
+      "carrier" ~ TRUE, 
+      "non-carrier" ~ FALSE
+    )
+  ) |>
+  pull(apoe4) |>
+  mean() 
+```
+There were `r nrow(baseline_df)` participants recruited. Of those recruited, 93 participants developed MCI. The average baseline age is 65.03. 30% of women in the study are APOE4 carriers. 
+
+__Import, clean, and tidy the dataset of longitudinally observed biomarker values__
+```{r}
+longitudinal_df = 
+  read.csv(
+    "data_mci/mci_amyloid.csv", 
+    skip = 1, 
+    na = c(".", "NA", "")) |>
+  janitor::clean_names() |> 
+  pivot_longer(
+    baseline:time_8, 
+    names_to = "time_years", 
+    values_to = "value"
+  ) |> 
+  mutate(
+    time_years = recode_values(
+      time_years, 
+      "baseline" ~ 0, 
+      "time_2" ~ 2, 
+      "time_4" ~ 4, 
+      "time_6" ~ 6, 
+      "time_8" ~ 8
+    )
+  )
+```
+
+__Describe the import process and dataset features__
+
+The longitudinal amyloid value dataset was imported using `read.csv`, with the first row skipped since it did not contain information about the data. `"."`, `"NA"` and blank entries were treated as missing values during import, and variable names were cleaned using `clean_names`. The repeated biomarker measurements, originally stored in separate columns for baseline and follow-up visits, were reformatted using `pivot_longer`. The visit variable was then recoded as `time_years`, with 0 representing baseline and 2, 4, 6, and 8 representing years elapsed since the study baseline. The resulting dataset is now tidy. Key variables include participant ID, time in years passed since the baseline time, and the corresponding results of amyloid β 42/40 ratio measurement (called `values`). 
