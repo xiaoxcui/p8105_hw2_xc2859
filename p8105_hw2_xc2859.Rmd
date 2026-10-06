@@ -283,3 +283,4 @@ write_csv(combined_df, "baseline_amyloid_combined.csv")
 ```
 
 __Describe the resulting data__
+The resulting dataset contains only participants who are present in both the baseline demographics and longitudinally observed biomarker datasets. Each row represents one participant at one follow-up time point. There are `r nrow(combined_df)` observations and `r ncol(combined_df)` variables. These variables include participant ID, age at time of recruitment, sex, years of education, APOE4 carrier status, age at MCI onset, follow-up time in years, and the results of amyloid β 42/40 ratio measurement. The demographic information is repeated across multiple time points for each participants due to the long format. The number of participants included in the resulting dataset is `r nrow(distinct(combined_df, id))`. 
