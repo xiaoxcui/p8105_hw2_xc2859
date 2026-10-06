@@ -246,3 +246,30 @@ longitudinal_df =
 __Describe the import process and dataset features__
 
 The longitudinal amyloid value dataset was imported using `read.csv`, with the first row skipped since it did not contain information about the data. `"."`, `"NA"` and blank entries were treated as missing values during import, and variable names were cleaned using `clean_names`. The repeated biomarker measurements, originally stored in separate columns for baseline and follow-up visits, were reformatted using `pivot_longer`. The visit variable was then recoded as `time_years`, with 0 representing baseline and 2, 4, 6, and 8 representing years elapsed since the study baseline. The resulting dataset is now tidy. Key variables include participant ID, time in years passed since the baseline time, and the corresponding results of amyloid β 42/40 ratio measurement (called `values`). 
+
+__Check participants appear in only one dataset__
+```{r}
+# Participants only in the baseline dataset
+baseline_df |>
+  anti_join(
+    longitudinal_df |> distinct(study_id), 
+    by = c("id" = "study_id")
+  ) |> 
+  nrow()
+
+# Participants only in the longitudinal dataset
+longitudinal_df |>
+  distinct(study_id) |>
+  anti_join(
+    baseline_df, 
+    by = c("study_id" = "id")
+  ) |>
+  nrow()
+```
+There were 8 participants who only appeared in the baseline dataset, and 16 participants who only appeared in the longitudinal dataset. 
+
+__Combine the two datasets__
+```{r}
+
+```
+
