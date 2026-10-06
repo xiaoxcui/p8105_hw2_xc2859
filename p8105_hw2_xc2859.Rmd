@@ -12,7 +12,7 @@ __Read and clean the data__
 library(tidyverse)
 
 nycsubway_df = 
-  read.csv(
+  read_csv(
     "data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv", 
     na = c("NA", ".", "")) |>
   janitor::clean_names() |>
@@ -163,7 +163,7 @@ For available data, the total weight of trash collected by Professor Trash Wheel
 __Import, clean, and tidy the baseline demographics dataset__
 ```{r}
 baseline_df = 
-  read.csv(
+  read_csv(
     "data_mci/MCI_baseline.csv", 
     skip = 1, 
     na = c(".", "NA", "")) |>
@@ -221,7 +221,7 @@ There were `r nrow(baseline_df)` participants recruited. Of those recruited, 93 
 __Import, clean, and tidy the dataset of longitudinally observed biomarker values__
 ```{r}
 longitudinal_df = 
-  read.csv(
+  read_csv(
     "data_mci/mci_amyloid.csv", 
     skip = 1, 
     na = c(".", "NA", "")) |>
@@ -245,7 +245,7 @@ longitudinal_df =
 
 __Describe the import process and dataset features__
 
-The longitudinal amyloid value dataset was imported using `read.csv`, with the first row skipped since it did not contain information about the data. `"."`, `"NA"` and blank entries were treated as missing values during import, and variable names were cleaned using `clean_names`. The repeated biomarker measurements, originally stored in separate columns for baseline and follow-up visits, were reformatted using `pivot_longer`. The visit variable was then recoded as `time_years`, with 0 representing baseline and 2, 4, 6, and 8 representing years elapsed since the study baseline. The resulting dataset is now tidy. Key variables include participant ID, time in years passed since the baseline time, and the corresponding results of amyloid β 42/40 ratio measurement (called `values`). 
+The longitudinal amyloid value dataset was imported using `read.csv`, with the first row skipped since it did not contain information about the data. `"."`, `"NA"` and blank entries were treated as missing values during import, and variable names were cleaned using `clean_names`. The repeated biomarker measurements, originally stored in separate columns for baseline and follow-up visits, were reformatted using `pivot_longer`. The visit variable was then recoded as `time_years`, with 0 representing baseline and 2, 4, 6, and 8 representing years elapsed since the study baseline. The resulting dataset is now tidy. There are `r nrow(longitudinal_df)` observations and `r ncol(longitudinal_df)` variables. These variables include participant ID, time in years passed since the baseline time, and the corresponding results of amyloid β 42/40 ratio measurement (called `values`). 
 
 __Check participants appear in only one dataset__
 ```{r}
@@ -268,8 +268,18 @@ longitudinal_df |>
 ```
 There were 8 participants who only appeared in the baseline dataset, and 16 participants who only appeared in the longitudinal dataset. 
 
-__Combine the two datasets__
+__Combine the two datasets and export__
 ```{r}
+# Combine the baseline and longitudinal datasets
+combined_df = 
+  inner_join(
+    baseline_df, 
+    longitudinal_df, 
+    by = c("id" = "study_id")
+  )
 
+# Export the combined dataset
+write_csv(combined_df, "baseline_amyloid_combined.csv")
 ```
 
+__Describe the resulting data__
